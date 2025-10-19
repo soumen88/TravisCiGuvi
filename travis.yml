@@ -1,0 +1,54 @@
+# Use Linux (Android not supported on macOS)
+os: linux
+dist: jammy
+
+# Android environment
+language: android
+jdk: openjdk17   # ✅ Use Java 8 since your project targets JVM 1.8
+
+# Android SDK setup
+android:
+  components:
+    - build-tools-35.0.0
+    - android-36
+    - platform-tools
+
+# Cache Gradle directories for faster builds
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
+# Environment variables (optional but helpful)
+env:
+  global:
+    - ANDROID_HOME=$HOME/android-sdk
+    - PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+
+# Before build: make Gradle wrapper executable
+before_install:
+  - chmod +x gradlew
+
+# Main build steps
+script:
+  # Clean and assemble APK (Debug + Release)
+  - ./gradlew clean
+  - ./gradlew assembleDebug
+  #- ./gradlew assembleRelease
+
+# Optional: upload APKs to GitHub Releases after successful build
+before_deploy:
+  - mkdir -p app/build/outputs/apk/
+
+deploy:
+  provider: releases
+  token: $GITHUB_TOKEN   # Define this in Travis settings
+  tag_name: "version-1"
+  name: "Latest Travis Build"
+  file:
+    - app/build/outputs/apk/debug/app-debug.apk
+    #- app/build/outputs/apk/release/app-release.apk
+  skip_cleanup: true
+  on:
+    branch: master
