@@ -4,7 +4,7 @@ dist: jammy
 
 # Android environment
 language: android
-jdk: openjdk17   # ✅ Use Java 8 since your project targets JVM 1.8
+jdk: openjdk17   # ✅ Use Java 8 since your project targets JVM 17
 
 # Android SDK setup
 android:
@@ -44,8 +44,8 @@ before_deploy:
 deploy:
   provider: releases
   token: $GITHUB_TOKEN   # Define this in Travis settings
-  tag_name: "version-1"
-  name: "Latest Travis Build"
+  tag_name: "version-2"
+  name: "Version Two Travis Build"
   file:
     - app/build/outputs/apk/debug/app-debug.apk
     #- app/build/outputs/apk/release/app-release.apk
