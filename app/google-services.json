@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "118480560883",
+    "project_id": "travisciguvi",
+    "storage_bucket": "travisciguvi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:118480560883:android:fde2210fc957ab444acd86",
+        "android_client_info": {
+          "package_name": "com.guvi.travisciguvi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUvEpg2TTzjwxK3G5Aq9-xGuwjhXhx7t4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
