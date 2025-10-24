@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.guvi.travisciguvi.navigation.AppNavHost
 import com.guvi.travisciguvi.ui.theme.TravisCiGuviTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,14 +21,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TravisCiGuviTheme {
-                //FirstScreen()
-                //LoginScreen()
-                val listItems = mutableListOf<String>()
-                for (i in 0..10){
-                    listItems.add("Item $i")
-                }
-                ListScreen(
-                    listItems
+                val navController = rememberNavController()
+                AppNavHost().SetupAppNavigationHost(
+                    navHostController = navController
                 )
             }
         }

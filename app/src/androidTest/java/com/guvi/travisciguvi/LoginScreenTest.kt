@@ -18,7 +18,7 @@ class LoginScreenTest {
 
     @Test
     fun testLoginScreen(){
-        val email = "abc@gmail.com"
+        val email = "abcgmail.com"
         val password = "abcd1234"
         //val password = ""
 
@@ -38,8 +38,7 @@ class LoginScreenTest {
         assertTrue(email.isNotEmpty())
         assertTrue(password.isNotEmpty())
 
-        composableRule.onNodeWithText("Invalid Email")
-            .assertExists()
+        composableRule.onNodeWithText("Invalid Email").assertExists()
 
     }
 }

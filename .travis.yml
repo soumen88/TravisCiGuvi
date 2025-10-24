@@ -1,66 +1,78 @@
+
 # Use Linux (Android not supported on macOS)
 os: linux
 dist: jammy
 
+# Android environment
 language: android
 jdk: openjdk17
 
+# Android SDK setup
 android:
   components:
     - build-tools-35.0.0
     - android-36
     - platform-tools
 
+# Cache Gradle directories for faster builds
 cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 
+# Environment variables
 env:
   global:
     - ANDROID_HOME=$HOME/android-sdk
     - PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+    # Default values for debug keystore
     - KEYSTORE_PATH=$HOME/.android/debug.keystore
     - KEYSTORE_ALIAS=androiddebugkey
     - KEYSTORE_PASS=android
-    # 🔥 Replace this with your actual Firebase App ID
-    - FIREBASE_APP_ID=1:118480560883:android:fde2210fc957ab444acd86
 
+# Before build: make Gradle wrapper executable
 before_install:
   - chmod +x gradlew
-  - |
-    if [ ! -f "$KEYSTORE_PATH" ]; then
-      echo "Debug keystore not found. Creating one..."
-      mkdir -p $HOME/.android
-      keytool -genkeypair -v -keystore $KEYSTORE_PATH -alias $KEYSTORE_ALIAS \
-        -storepass $KEYSTORE_PASS -keypass $KEYSTORE_PASS -dname "CN=Android Debug,O=Android,C=US" \
-        -keyalg RSA -keysize 2048 -validity 10000
-    else
-      echo "Debug keystore already exists."
-    fi
+  -
+#before_script:
+#  # Set up and start Android emulator
+#  - sdkmanager "system-images;android-34;google_apis;x86_64"
+#  - echo "no" | avdmanager create avd -n test -k "system-images;android-34;google_apis;x86_64" --abi x86_64 --device "pixel"
+#  - emulator -avd test -no-window -no-audio -no-accel -no-snapshot -gpu swiftshader_indirect &
+#  - adb wait-for-device
+#  - adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+#  - adb shell input keyevent 82
+#  - echo "Emulator started successfully!"
 
+# Main build steps
 script:
+  # 1. Clean project
   - ./gradlew clean
-  - echo "Running Robolectric + unit tests..."
-  - ./gradlew testDebugUnitTest
+  # 2. Run unit tests
+  - ./gradlew test
 
-  - echo "Building APK..."
+  # 3. Run Instrumentation tests
+  #- ./gradlew connectedAndroidTest
+
+  # 4. Build APK (only if tests pass)
   - ./gradlew assembleDebug
+  #- ./gradlew assembleRelease
 
-  - echo "Generating SHA-1 key..."
-  - keytool -list -v -keystore $KEYSTORE_PATH -alias $KEYSTORE_ALIAS \
-    -storepass $KEYSTORE_PASS -keypass $KEYSTORE_PASS | grep "SHA1" || true
+  # - ./gradlew assembleRelease
 
-# ✅ Deploy to Firebase App Distribution
-after_success:
-  # Install Firebase CLI
-  - curl -sL https://firebase.tools | bash
-  # Upload the debug APK to Firebase App Distribution
-  - echo "Uploading APK to Firebase App Distribution..."
-  - firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk \
-    --app $FIREBASE_APP_ID \
-    --token $FIREBASE_TOKEN \
-    --groups "qa-group" \
-    --release-notes "Automated build from Travis CI"
+# Optional: upload APKs to GitHub Releases
+before_deploy:
+  - mkdir -p app/build/outputs/apk/
 
+deploy:
+  provider: releases
+  token: $GITHUB_TOKEN # Define in Travis CI settings
+  tag_name: "version-4"
+  name: "Latest Travis Build"
+  file:
+    - app/build/outputs/apk/debug/app-debug.apk
+    # - app/build/outputs/apk/release/app-release.apk
+  skip_cleanup: true
+  on:
+    branch: master
