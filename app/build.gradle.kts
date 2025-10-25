@@ -58,4 +58,9 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.test)
+    implementation(libs.androidx.livedata)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.runtime.compose)
+    testImplementation(kotlin("test"))
+
 }

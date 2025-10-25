@@ -92,9 +92,34 @@ fun DisplayInputField(
         ),
         placeholder = {
             Text(text = hintText)
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
-        )
+        }
     )
 }
+
+@Composable
+fun DisplayInputTextField(
+    hintText : String,
+    onValueChange : (String) -> Unit
+){
+    var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
+
+    OutlinedTextField(
+        value = textFieldValue,
+        onValueChange = {
+            textFieldValue = it
+            if(textFieldValue.text.isNotEmpty()){
+                onValueChange(textFieldValue.text)
+            }
+        },
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            cursorColor = Color.Black,
+            unfocusedTextColor = Color.Gray,
+            errorContainerColor = Color.Red
+        ),
+        placeholder = {
+            Text(text = hintText)
+        }
+    )
+}
+

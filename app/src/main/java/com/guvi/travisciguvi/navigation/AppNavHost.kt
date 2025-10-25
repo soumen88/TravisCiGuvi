@@ -6,14 +6,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.guvi.travisciguvi.BmiScreen
+import com.guvi.travisciguvi.CounterScreen
 import com.guvi.travisciguvi.HomeScreen
 import com.guvi.travisciguvi.SplashScreen
+import com.guvi.traviscipractice.GameScreen
 
 class AppNavHost {
     @Composable
     fun SetupAppNavigationHost(
         navHostController: NavHostController,
-        startDestinationScreen : String = ScreenEnums.SplashScreen.name
+        startDestinationScreen : String = ScreenEnums.GameScreen.name
     ){
         NavHost(
             navController = navHostController,
@@ -27,7 +29,11 @@ class AppNavHost {
                 navHostController = navHostController,
                 navGraphBuilder = this
             )
-            DisplayBmiScreenInNavigation(
+            DisplayCounterScreenInNavigation(
+                navHostController = navHostController,
+                navGraphBuilder = this
+            )
+            DisplayGameScreenInNavigation(
                 navHostController = navHostController,
                 navGraphBuilder = this
             )
@@ -60,14 +66,25 @@ class AppNavHost {
         }
     }
 
-    fun DisplayBmiScreenInNavigation(
+    fun DisplayCounterScreenInNavigation(
         navHostController: NavHostController,
         navGraphBuilder: NavGraphBuilder
     ){
         navGraphBuilder.composable(
-            route = ScreenEnums.BmiScreen.name
+            route = ScreenEnums.CounterScreen.name
         ){
-            BmiScreen()
+            CounterScreen()
+        }
+    }
+
+    fun DisplayGameScreenInNavigation(
+        navHostController: NavHostController,
+        navGraphBuilder: NavGraphBuilder
+    ){
+        navGraphBuilder.composable(
+            route = ScreenEnums.GameScreen.name
+        ){
+            GameScreen()
         }
     }
 }
